@@ -1,5 +1,8 @@
 package com.codecool.fiveinarow;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 import java.util.Random;
 
@@ -97,11 +100,17 @@ public class Game implements GameInterface {
         if (isFull()) {
             return null;
         }
-
+        int row;
+        int col;
         Random rand = new Random();
-//          Obtain a number between [0 - 49].
-        int row = rand.nextInt(board.length);
-        int col = rand.nextInt(board[0].length);
+
+        while (1 == 1) {
+            row = rand.nextInt(board.length);
+            col = rand.nextInt(board[0].length);
+            if (board[row][col] == 0) {
+                break;
+            }
+        }
         int[] arr = {row, col};
         return arr;
     }
@@ -154,7 +163,7 @@ public class Game implements GameInterface {
     }
 
     public void printBoard() {
-        System.out.flush();
+        // TODO clear screen
 
         // PRINT HEADER
         String columnsLetters = "ABCDEFGHIJKLMNOPQRSTUVXYZ";
@@ -222,7 +231,7 @@ public class Game implements GameInterface {
             if ((player == 1 && ifPlayer1AI) || (player == 2 && ifPlayer2AI)) {
                 System.out.println("AI is thinking.");
                 try {
-                    Thread.sleep(1500);//time is in ms (1000 ms = 1 second)
+                    Thread.sleep(1000);//time is in ms (1000 ms = 1 second)
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

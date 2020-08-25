@@ -6,7 +6,7 @@ public class FiveInARow {
         Game game = new Game(11, 11);
 
         game.enableAi(1);
-        game.enableAi(0);
+        game.enableAi(2);
         game.play(5);
     }
 }
