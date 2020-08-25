@@ -85,8 +85,22 @@ public class Game implements GameInterface {
     }
 
     public void mark(int player, int row, int col) {
+        if (board[row][col] == 0) {
+            try {
+                board[row][col] = player;
+            } catch (Exception e) {
+                System.out.println("Bad..");
+            }
+        }
 
+//        for (int[] aRow : board) {
+//            for (int elem : aRow) {
+//                System.out.print(elem);
+//            }
+//            System.out.println();
+//        }
     }
+
 
     public boolean hasWon(int player, int howMany) {
         return false;
