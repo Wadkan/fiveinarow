@@ -96,17 +96,19 @@ public class Game implements GameInterface {
         return coordinates;
     }
 
-    public int[] getAiWinnerMove(int player, boolean ifAllElseOne) {
+    public int[] getAiWinnerMove(int player, boolean ifPreventMode, boolean ifNextRightWinningMove) {
         StringBuilder regexBuildForWin = new StringBuilder();
-        int startsCheckFrom = (ifAllElseOne) ? howManyGlobal - 2 : 1;   // if prevent, check -1 and -2 to winning row
+        int startsCheckFrom = (ifPreventMode) ? howManyGlobal - 2 : 1;   // if prevent, check -1 and -2 to winning row
+        int startIfNextWinning = (ifNextRightWinningMove) ? howManyGlobal - 1 : 0;
         int winnerColumn = -1;
 
         for (int howManyIter = startsCheckFrom; howManyIter < howManyGlobal; howManyIter++) {
-            if (ifAllElseOne) {
-                System.out.print("xxxx->");
+            if (ifPreventMode && godMode) {
+                System.out.print("TRY TO FIND AND PREVENT ENEMY'S WIN: ");
                 System.out.print(howManyIter);
             }
 
+            // TODO regex expand for 1.1.1 and 11.1 and 1.11 cases
             regexBuildForWin.append(".*");
             for (int i = 0; i < howManyIter; i++) {
                 regexBuildForWin.append("[" + Integer.toString(player) + "]");
@@ -115,7 +117,7 @@ public class Game implements GameInterface {
             String regex = regexBuildForWin.toString();
             System.out.println("REGEX: " + regex);
 
-            for (int winnerRow = 0; winnerRow < board.length; winnerRow++) {
+            for (int winnerRow = startIfNextWinning; winnerRow < board.length; winnerRow++) {
                 StringBuilder rowStringBuilder = new StringBuilder();
                 for (int columnForAppend = 0; columnForAppend < board[0].length; columnForAppend++) {
                     rowStringBuilder.append(board[winnerRow][columnForAppend]);
@@ -164,13 +166,19 @@ public class Game implements GameInterface {
         int row, col;
         Random rand = new Random();
 
+        // GET WHETHER NEXT MOVE IS WINNING
+        coordinates = getAiWinnerMove((player == 1) ? 2 : 1, true, false);
+        if (coordinates[0] != -1 && coordinates[1] != -1) {
+            return coordinates;
+        }
+
         // GET ENEMY WINNING MOVE
         if (preventMode) {
-            coordinates = getAiWinnerMove((player == 1) ? 2 : 1, true);
+            coordinates = getAiWinnerMove((player == 1) ? 2 : 1, true, false);
         }
         // GET WINNING MOVE if the enemy is not in a winning state
         if (coordinates[0] == -1 && coordinates[1] == -1) {
-            coordinates = getAiWinnerMove(player, false);
+            coordinates = getAiWinnerMove(player, false, false);
         }
 
         if (coordinates[0] == -1 && coordinates[1] == -1) {
@@ -316,13 +324,19 @@ public class Game implements GameInterface {
             if ((player == 1 && ifPlayer1AI) || (player == 2 && ifPlayer2AI)) {
                 System.out.println("AI is thinking.");
                 try {
-                    Thread.sleep(1000);//time is in ms (1000 ms = 1 second)
+                    Thread.sleep(10);//time is in ms (1000 ms = 1 second)
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 coordinates = getAiMove(player);
             } else {
                 coordinates = getMove(player);
+            }
+
+            if (isFull()) {
+                player = 0;
+                printResult(player);
+                break;
             }
 
             if (coordinates[0] == -1 && coordinates[1] == -1) {
@@ -334,11 +348,7 @@ public class Game implements GameInterface {
 
 //        The game ends when someone wins or the board is full
             if (hasWon(player, howMany)) {
-                if (isFull()) {
-                    player = 0;
-                }
                 printResult(player);
-                System.out.println("Thank you for choosing COOLCODERS AGAIN!");
                 break;
             }
 
@@ -349,10 +359,6 @@ public class Game implements GameInterface {
                 player = 1;
             }
         }
-
-//        The game uses howMany to set the win condition
-//        The game handles bad input(wrong coordinates) without crashing
-
-
+        System.out.println("Thank you for choosing COOLCODERS AGAIN!");
     }
 }
