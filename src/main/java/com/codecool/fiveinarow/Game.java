@@ -32,6 +32,7 @@ public class Game implements GameInterface {
         // char[] columnsLetters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'Y', 'Z'};
         String columnsLetters = "ABCDEFGHIJKLMNOPQRSTUVXYZ";
         char inputRow, inputRowRaw;
+        char inputColRaw;
         int inputCol = 0;
         int inputRowNumber = 0;
         boolean keepAsking = true;
@@ -40,14 +41,22 @@ public class Game implements GameInterface {
         Scanner scanner = new Scanner(System.in);
 
         while (keepAsking) {
+            System.out.println("Please, give the coordinates, eg.: A1 ->");
+            String input = scanner.nextLine();
+
+            if (input.equals("quit")) {
+                coordinates[0] = -1;
+                coordinates[1] = -1;
+                return coordinates;
+            }
+
             try {
-                System.out.println("Please, give the row, eg.: A ->");
-                inputRowRaw = scanner.next().charAt(0);
-                inputRow = Character.toUpperCase(inputRowRaw);
+                inputRow = Character.toUpperCase(input.charAt(0));
                 inputRowNumber = columnsLetters.indexOf(inputRow);
-                System.out.println("Please, give the column, eg.: 1 ->");
-                inputCol = scanner.nextInt();
+                inputColRaw = input.charAt(1);
+                inputCol = Character.getNumericValue(inputColRaw);
             } catch (Exception e) {
+                System.out.println(e);
                 keepAsking = true;
                 System.out.println("Don't kidding me, dude!");
                 continue;
@@ -66,13 +75,16 @@ public class Game implements GameInterface {
                 keepAsking = false;
             }
 
-            System.out.println("row: " + inputRowNumber);
-            System.out.println("col: " + inputCol);
-            if (board[inputRowNumber][inputCol] != 0) {
+            try {
+
+                if (board[inputRowNumber][inputCol] != 0) {
+                    keepAsking = true;
+                    System.out.println("This field is not empty!");
+                }
+            } catch (Exception ArrayIndexOutOfBoundsException) {
+                System.out.println("Bad input.");
                 keepAsking = true;
-                System.out.println("This field is not empty!");
             }
-            ;
         }
 
         coordinates[0] = inputRowNumber;
@@ -92,13 +104,6 @@ public class Game implements GameInterface {
                 System.out.println("Bad..");
             }
         }
-
-//        for (int[] aRow : board) {
-//            for (int elem : aRow) {
-//                System.out.print(elem);
-//            }
-//            System.out.println();
-//        }
     }
 
 
@@ -111,15 +116,6 @@ public class Game implements GameInterface {
         ;
         regexBuild.append(".*");
         String regex = regexBuild.toString();
-
-//        // FOR TEST:
-//        System.out.println(regex);    // regex
-//        for (int[] aRow : board) {    // board
-//            for (int elem : aRow) {
-//                System.out.print(elem);
-//            }
-//            System.out.println();
-//        }
 
         for (int[] aRow : board) {
             StringBuilder rowStringBuilder = new StringBuilder();
@@ -148,6 +144,8 @@ public class Game implements GameInterface {
     }
 
     public void printBoard() {
+        System.out.flush();
+
         // PRINT HEADER
         String columnsLetters = "ABCDEFGHIJKLMNOPQRSTUVXYZ";
         System.out.print("\t");
@@ -182,11 +180,56 @@ public class Game implements GameInterface {
     }
 
     public void printResult(int player) {
+        switch (player) {
+            case 0:
+                System.out.println("It's a tie!");
+            case 1:
+                System.out.println("X won!");
+            case 2:
+                System.out.println("0 won!");
+        }
     }
 
     public void enableAi(int player) {
     }
 
     public void play(int howMany) {
+        // PRINT THE STARTER BOARD
+
+//        Player 1 starts the game
+        int player = 1; // FIRST PLAYER
+
+        while (1 == 1) {
+            printBoard();
+            int[] coordinates = getMove(player);
+            if (coordinates[0] == -1 && coordinates[1] == -1) {
+                System.out.println("You left the game. Thank you for playing with COOLCODERS!");
+                break;
+            }
+            mark(player, coordinates[0], coordinates[1]);
+            printBoard();
+
+//        The game ends when someone wins or the board is full
+            if (hasWon(player, howMany)) {
+                if (isFull()) {
+                    player = 0;
+                }
+                printResult(player);
+                System.out.println("Thank you for choosing COOLCODERS AGAIN!");
+                break;
+            }
+
+//        Players alternate their moves (1, 2, 1, 2...)
+            if (player == 1) {
+                player = 2;
+            } else {
+                player = 1;
+            }
+        }
+
+//        The game uses howMany to set the win condition
+//        The game handles bad input(wrong coordinates) without crashing
+
+
     }
 }
