@@ -11,6 +11,7 @@ public class Game implements GameInterface {
     private int[][] board;
     private boolean ifPlayer1AI = false;
     private boolean ifPlayer2AI = false;
+    private boolean godMode = false;
 
     public Game(int nRows, int nCols) {
         board = new int[nRows][nCols];
@@ -118,21 +119,24 @@ public class Game implements GameInterface {
                 String rowString = rowStringBuilder.toString();
 
                 if (rowString.matches(regex)) {
-                    for (int winnerColumnCheck = 0; winnerColumnCheck < board[0].length-2; winnerColumnCheck++) {
+                    for (int winnerColumnCheck = 0; winnerColumnCheck < board[0].length - 2; winnerColumnCheck++) {
                         String twoCharForCheck = rowString.substring(winnerColumnCheck, winnerColumnCheck + 2);
-                        System.out.print(twoCharForCheck);
-                        System.out.print("-");
-                        System.out.print(twoCharForCheck);
-                        System.out.print(" ");
+
+                        if (godMode) {
+                            System.out.print(twoCharForCheck);
+                            System.out.print("-");
+                            System.out.print(twoCharForCheck);
+                            System.out.print(" ");
+                        }
                         if ((twoCharForCheck.equals(Integer.toString(player) + "0"))) {
                             winnerColumn = winnerColumnCheck + 1;
-                            System.out.println("---------MATCH---------");
-                        } else if (twoCharForCheck.equals("0" + Integer.toString(player)) ) {
+                        } else if (twoCharForCheck.equals("0" + Integer.toString(player))) {
                             winnerColumn = winnerColumnCheck;
-                            System.out.println("---------MATCH---------");
                         }
                         if (winnerColumn != -1) {
-                            System.out.println("NOT MINUS 1");
+                            if (godMode) {
+                                System.out.println("---------WINNER COORDINATES FOUND!---------");
+                            }
                             int[] winnerCoordinates = {winnerRow, winnerColumn};
                             return winnerCoordinates;
                         }
@@ -257,10 +261,13 @@ public class Game implements GameInterface {
         switch (player) {
             case 0:
                 System.out.println("It's a tie!");
+                break;
             case 1:
                 System.out.println("X won!");
+                break;
             case 2:
                 System.out.println("0 won!");
+                break;
         }
     }
 
@@ -272,15 +279,19 @@ public class Game implements GameInterface {
         }
     }
 
+    public void enableGodMode() {
+        godMode = true;
+    }
+
     public void play(int howMany) {
         // PRINT THE STARTER BOARD
+        printBoard();
 
 //        Player 1 starts the game
         int player = 1; // FIRST PLAYER
         int[] coordinates;
 
         while (1 == 1) {
-            printBoard();
 
             System.out.println("Player" + player + "'s turn.");
             if ((player == 1 && ifPlayer1AI) || (player == 2 && ifPlayer2AI)) {
