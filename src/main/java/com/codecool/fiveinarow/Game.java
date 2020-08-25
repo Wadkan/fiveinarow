@@ -103,6 +103,35 @@ public class Game implements GameInterface {
 
 
     public boolean hasWon(int player, int howMany) {
+        StringBuilder regexBuild = new StringBuilder();
+        regexBuild.append(".*");
+        for (int i=0;i<howMany;i++) {
+            regexBuild.append("[" + Integer.toString(player) + "]");
+        } ;
+        regexBuild.append(".*");
+        String regex = regexBuild.toString();
+
+//        // FOR TEST:
+//        System.out.println(regex);
+//        for (int[] aRow : board) {
+//            for (int elem : aRow) {
+//                System.out.print(elem);
+//            }
+//            System.out.println();
+//        }
+
+        for (int[] aRow : board) {
+            StringBuilder rowStringBuilder = new StringBuilder();
+            for (int elem : aRow){
+                rowStringBuilder.append(elem);
+            }
+            String rowString = rowStringBuilder.toString();
+
+            System.out.println(rowString);
+            if (rowString.matches(regex)){
+                return true;
+            };
+        }
         return false;
     }
 
