@@ -105,15 +105,16 @@ public class Game implements GameInterface {
     public boolean hasWon(int player, int howMany) {
         StringBuilder regexBuild = new StringBuilder();
         regexBuild.append(".*");
-        for (int i=0;i<howMany;i++) {
+        for (int i = 0; i < howMany; i++) {
             regexBuild.append("[" + Integer.toString(player) + "]");
-        } ;
+        }
+        ;
         regexBuild.append(".*");
         String regex = regexBuild.toString();
 
 //        // FOR TEST:
-//        System.out.println(regex);
-//        for (int[] aRow : board) {
+//        System.out.println(regex);    // regex
+//        for (int[] aRow : board) {    // board
 //            for (int elem : aRow) {
 //                System.out.print(elem);
 //            }
@@ -122,23 +123,23 @@ public class Game implements GameInterface {
 
         for (int[] aRow : board) {
             StringBuilder rowStringBuilder = new StringBuilder();
-            for (int elem : aRow){
+            for (int elem : aRow) {
                 rowStringBuilder.append(elem);
             }
             String rowString = rowStringBuilder.toString();
 
-            System.out.println(rowString);
-            if (rowString.matches(regex)){
+            if (rowString.matches(regex)) {
                 return true;
-            };
+            }
+            ;
         }
         return false;
     }
 
     public boolean isFull() {
-        for (int[] aRow : board){
-            for (int elem : aRow){
-                if (elem == 0){
+        for (int[] aRow : board) {
+            for (int elem : aRow) {
+                if (elem == 0) {
                     return false;
                 }
             }
@@ -147,6 +148,37 @@ public class Game implements GameInterface {
     }
 
     public void printBoard() {
+        // PRINT HEADER
+        String columnsLetters = "ABCDEFGHIJKLMNOPQRSTUVXYZ";
+        System.out.print("\t");
+
+        for (int i = 0; i < board[0].length; i++) {
+            System.out.print(i + "\t");
+        }
+        System.out.println();
+
+        // PRINT ROWS
+        char printElem = ' ';
+        for (int i = 0; i < board.length; i++) {
+            System.out.print(columnsLetters.substring(i, i + 1) + "\t");
+            for (int elem : board[i]) {
+                switch (elem) {
+                    case 0:
+                        printElem = '.';
+                        break;
+                    case 1:
+                        printElem = 'X';
+                        break;
+                    case 2:
+                        printElem = 'O';
+                        break;
+                    default:
+                        printElem = ' ';
+                }
+                System.out.print(printElem + "\t");
+            }
+            System.out.println();
+        }
     }
 
     public void printResult(int player) {

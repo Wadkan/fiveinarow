@@ -6,17 +6,21 @@ public class FiveInARow {
         Game game = new Game(11, 11);
 
         // TEST FOR GET_MOVE and MARK
-        int[] coordinates = game.getMove(1);
-        game.mark(1, coordinates[0], coordinates[1]);
-        coordinates = game.getMove(1);
-        game.mark(1, coordinates[0], coordinates[1]);
-        coordinates = game.getMove(1);
-        game.mark(1, coordinates[0], coordinates[1]);
+//        int[] coordinates = game.getMove(1);
+//        game.mark(1, coordinates[0], coordinates[1]);
+//        coordinates = game.getMove(1);
+//        game.mark(1, coordinates[0], coordinates[1]);
+//        coordinates = game.getMove(1);
+//        game.mark(1, coordinates[0], coordinates[1]);
 
         // TEST FOR HAS_WON
         System.out.println(game.hasWon(1, 3));
 
+        // TEST FOR IS_FULL
         System.out.println(game.isFull());
+
+        // TEST FOR PRINT BOARD
+        game.printBoard();
 
         game.enableAi(1);
         game.enableAi(2);
