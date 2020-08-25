@@ -16,6 +16,8 @@ public class FiveInARow {
         // TEST FOR HAS_WON
         System.out.println(game.hasWon(1, 3));
 
+        System.out.println(game.isFull());
+
         game.enableAi(1);
         game.enableAi(2);
         game.play(5);
