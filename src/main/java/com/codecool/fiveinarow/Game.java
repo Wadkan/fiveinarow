@@ -98,12 +98,15 @@ public class Game implements GameInterface {
 
     public int[] getAiWinnerMove(int player, boolean ifAllElseOne) {
         StringBuilder regexBuildForWin = new StringBuilder();
-        int startsCheckFrom = (ifAllElseOne) ? howManyGlobal : 1;
+        int startsCheckFrom = (ifAllElseOne) ? howManyGlobal - 2 : 1;   // if prevent, check -1 and -2 to winning row
         int winnerColumn = -1;
-        System.out.println("--->");
-        System.out.print(howManyGlobal);
 
         for (int howManyIter = startsCheckFrom; howManyIter < howManyGlobal; howManyIter++) {
+            if (ifAllElseOne) {
+                System.out.print("xxxx->");
+                System.out.print(howManyIter);
+            }
+
             regexBuildForWin.append(".*");
             for (int i = 0; i < howManyIter; i++) {
                 regexBuildForWin.append("[" + Integer.toString(player) + "]");
