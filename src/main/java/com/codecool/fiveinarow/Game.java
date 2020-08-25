@@ -96,23 +96,79 @@ public class Game implements GameInterface {
         return coordinates;
     }
 
+    public int[] getAiWinnerMove(int player) {
+        StringBuilder regexBuildForWin = new StringBuilder();
+        int possibleMaxShoot = 5;
+        int winnerColumn = -1;
+
+        for (int howMany = 1; howMany < possibleMaxShoot; howMany++) {
+            regexBuildForWin.append(".*");
+            for (int i = 0; i < howMany; i++) {
+                regexBuildForWin.append("[" + Integer.toString(player) + "]");
+            }
+            regexBuildForWin.append(".*");
+            String regex = regexBuildForWin.toString();
+            System.out.println("REGEX: " + regex);
+
+            for (int winnerRow = 0; winnerRow < board.length; winnerRow++) {
+                StringBuilder rowStringBuilder = new StringBuilder();
+                for (int columnForAppend = 0; columnForAppend < board[0].length; columnForAppend++) {
+                    rowStringBuilder.append(board[winnerRow][columnForAppend]);
+                }
+                String rowString = rowStringBuilder.toString();
+
+                if (rowString.matches(regex)) {
+                    for (int winnerColumnCheck = 0; winnerColumnCheck < board[0].length-2; winnerColumnCheck++) {
+                        String twoCharForCheck = rowString.substring(winnerColumnCheck, winnerColumnCheck + 2);
+                        System.out.print(twoCharForCheck);
+                        System.out.print("-");
+                        System.out.print(twoCharForCheck);
+                        System.out.print(" ");
+                        if ((twoCharForCheck.equals(Integer.toString(player) + "0"))) {
+                            winnerColumn = winnerColumnCheck + 1;
+                            System.out.println("---------MATCH---------");
+                        } else if (twoCharForCheck.equals("0" + Integer.toString(player)) ) {
+                            winnerColumn = winnerColumnCheck;
+                            System.out.println("---------MATCH---------");
+                        }
+                        if (winnerColumn != -1) {
+                            System.out.println("NOT MINUS 1");
+                            int[] winnerCoordinates = {winnerRow, winnerColumn};
+                            return winnerCoordinates;
+                        }
+                    }
+                    System.out.println();
+                }
+            }
+        }
+        int[] winnerCoordinates = {-1, -1};   // return if not match for winner coordinates
+        return winnerCoordinates;
+    }
+
+
     public int[] getAiMove(int player) {
         if (isFull()) {
             return null;
         }
-        int row;
-        int col;
+        int row, col;
         Random rand = new Random();
 
-        while (1 == 1) {
-            row = rand.nextInt(board.length);
-            col = rand.nextInt(board[0].length);
-            if (board[row][col] == 0) {
-                break;
+        // GET WINNING MOVE
+        int[] coordinates = getAiWinnerMove(player);
+        if (coordinates[0] == -1 && coordinates[1] == -1) {
+            // GET RANDOM MOVE
+            while (1 == 1) {
+                row = rand.nextInt(board.length);
+                col = rand.nextInt(board[0].length);
+                if (board[row][col] == 0) {
+                    break;
+                }
             }
+            int[] arr = {row, col};
+            return arr;     // return random coordinates, if there is no winner ones.
+        } else {
+            return coordinates;     // return WINNER coordinates, if there is some.
         }
-        int[] arr = {row, col};
-        return arr;
     }
 
     public void mark(int player, int row, int col) {
@@ -146,7 +202,6 @@ public class Game implements GameInterface {
             if (rowString.matches(regex)) {
                 return true;
             }
-            ;
         }
         return false;
     }
