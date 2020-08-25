@@ -1,8 +1,5 @@
 package com.codecool.fiveinarow;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Scanner;
 import java.util.Random;
 
@@ -12,6 +9,8 @@ public class Game implements GameInterface {
     private boolean ifPlayer1AI = false;
     private boolean ifPlayer2AI = false;
     private boolean godMode = false;
+    int howManyGlobal;
+    boolean preventMode = false;
 
     public Game(int nRows, int nCols) {
         board = new int[nRows][nCols];
@@ -97,14 +96,16 @@ public class Game implements GameInterface {
         return coordinates;
     }
 
-    public int[] getAiWinnerMove(int player) {
+    public int[] getAiWinnerMove(int player, boolean ifAllElseOne) {
         StringBuilder regexBuildForWin = new StringBuilder();
-        int possibleMaxShoot = 5;
+        int startsCheckFrom = (ifAllElseOne) ? howManyGlobal : 1;
         int winnerColumn = -1;
+        System.out.println("--->");
+        System.out.print(howManyGlobal);
 
-        for (int howMany = 1; howMany < possibleMaxShoot; howMany++) {
+        for (int howManyIter = startsCheckFrom; howManyIter < howManyGlobal; howManyIter++) {
             regexBuildForWin.append(".*");
-            for (int i = 0; i < howMany; i++) {
+            for (int i = 0; i < howManyIter; i++) {
                 regexBuildForWin.append("[" + Integer.toString(player) + "]");
             }
             regexBuildForWin.append(".*");
@@ -135,6 +136,7 @@ public class Game implements GameInterface {
                         }
                         if (winnerColumn != -1) {
                             if (godMode) {
+                                System.out.println();
                                 System.out.println("---------WINNER COORDINATES FOUND!---------");
                             }
                             int[] winnerCoordinates = {winnerRow, winnerColumn};
@@ -151,16 +153,25 @@ public class Game implements GameInterface {
 
 
     public int[] getAiMove(int player) {
+        int[] coordinates = {-1, -1};
+
         if (isFull()) {
             return null;
         }
         int row, col;
         Random rand = new Random();
 
-        // GET WINNING MOVE
-        int[] coordinates = getAiWinnerMove(player);
+        // GET ENEMY WINNING MOVE
+        if (preventMode) {
+            coordinates = getAiWinnerMove((player == 1) ? 2 : 1, true);
+        }
+        // GET WINNING MOVE if the enemy is not in a winning state
         if (coordinates[0] == -1 && coordinates[1] == -1) {
-            // GET RANDOM MOVE
+            coordinates = getAiWinnerMove(player, false);
+        }
+
+        if (coordinates[0] == -1 && coordinates[1] == -1) {
+            // GET RANDOM MOVE IF NO WINNING STATES
             while (1 == 1) {
                 row = rand.nextInt(board.length);
                 col = rand.nextInt(board[0].length);
@@ -168,8 +179,8 @@ public class Game implements GameInterface {
                     break;
                 }
             }
-            int[] arr = {row, col};
-            return arr;     // return random coordinates, if there is no winner ones.
+            int[] randomCoordinates = {row, col};
+            return randomCoordinates;     // return random coordinates, if there is no winner ones.
         } else {
             return coordinates;     // return WINNER coordinates, if there is some.
         }
@@ -283,9 +294,14 @@ public class Game implements GameInterface {
         godMode = true;
     }
 
+    public void enablePreventMode() {
+        preventMode = true;
+    }
+
     public void play(int howMany) {
         // PRINT THE STARTER BOARD
         printBoard();
+        howManyGlobal = howMany;
 
 //        Player 1 starts the game
         int player = 1; // FIRST PLAYER

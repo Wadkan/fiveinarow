@@ -6,8 +6,11 @@ public class FiveInARow {
         Game game = new Game(11, 11);
 
         game.enableGodMode();
+//        game.enablePreventMode();
+
         game.enableAi(1);
         game.enableAi(2);
+
         game.play(5);
     }
 }
