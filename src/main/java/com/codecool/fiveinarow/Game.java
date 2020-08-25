@@ -1,8 +1,7 @@
 package com.codecool.fiveinarow;
 
-import java.sql.Struct;
-import java.util.Arrays;
 import java.util.Scanner;
+import java.util.Random;
 
 public class Game implements GameInterface {
 
@@ -98,7 +97,12 @@ public class Game implements GameInterface {
         if (isFull()) {
             return null;
         }
-        int[] arr = {0, 0};
+
+        Random rand = new Random();
+//          Obtain a number between [0 - 49].
+        int row = rand.nextInt(board.length);
+        int col = rand.nextInt(board[0].length);
+        int[] arr = {row, col};
         return arr;
     }
 
@@ -214,9 +218,11 @@ public class Game implements GameInterface {
         while (1 == 1) {
             printBoard();
 
+            System.out.println("Player" + player + "'s turn.");
             if ((player == 1 && ifPlayer1AI) || (player == 2 && ifPlayer2AI)) {
+                System.out.println("AI is thinking.");
                 try {
-                    Thread.sleep(1000);//time is in ms (1000 ms = 1 second)
+                    Thread.sleep(1500);//time is in ms (1000 ms = 1 second)
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
