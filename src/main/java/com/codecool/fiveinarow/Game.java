@@ -1,11 +1,14 @@
 package com.codecool.fiveinarow;
 
+import java.sql.Struct;
 import java.util.Arrays;
 import java.util.Scanner;
 
 public class Game implements GameInterface {
 
     private int[][] board;
+    private boolean ifPlayer1AI = false;
+    private boolean ifPlayer2AI = false;
 
     public Game(int nRows, int nCols) {
         board = new int[nRows][nCols];
@@ -56,7 +59,6 @@ public class Game implements GameInterface {
                 inputColRaw = input.charAt(1);
                 inputCol = Character.getNumericValue(inputColRaw);
             } catch (Exception e) {
-                System.out.println(e);
                 keepAsking = true;
                 System.out.println("Don't kidding me, dude!");
                 continue;
@@ -93,7 +95,11 @@ public class Game implements GameInterface {
     }
 
     public int[] getAiMove(int player) {
-        return null;
+        if (isFull()) {
+            return null;
+        }
+        int[] arr = {0, 0};
+        return arr;
     }
 
     public void mark(int player, int row, int col) {
@@ -191,6 +197,11 @@ public class Game implements GameInterface {
     }
 
     public void enableAi(int player) {
+        if (player == 1) {
+            ifPlayer1AI = true;
+        } else if (player == 2) {
+            ifPlayer2AI = true;
+        }
     }
 
     public void play(int howMany) {
@@ -198,10 +209,22 @@ public class Game implements GameInterface {
 
 //        Player 1 starts the game
         int player = 1; // FIRST PLAYER
+        int[] coordinates;
 
         while (1 == 1) {
             printBoard();
-            int[] coordinates = getMove(player);
+
+            if ((player == 1 && ifPlayer1AI) || (player == 2 && ifPlayer2AI)) {
+                try {
+                    Thread.sleep(1000);//time is in ms (1000 ms = 1 second)
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                coordinates = getAiMove(player);
+            } else {
+                coordinates = getMove(player);
+            }
+
             if (coordinates[0] == -1 && coordinates[1] == -1) {
                 System.out.println("You left the game. Thank you for playing with COOLCODERS!");
                 break;
