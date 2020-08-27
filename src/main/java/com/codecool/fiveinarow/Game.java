@@ -324,7 +324,7 @@ public class Game implements GameInterface {
             if ((player == 1 && ifPlayer1AI) || (player == 2 && ifPlayer2AI)) {
                 System.out.println("AI is thinking.");
                 try {
-                    Thread.sleep(10);//time is in ms (1000 ms = 1 second)
+                    Thread.sleep(1000);//time is in ms (1000 ms = 1 second)
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
